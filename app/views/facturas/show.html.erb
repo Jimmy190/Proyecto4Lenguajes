@@ -1,0 +1,43 @@
+<h1 class="text-2xl font-bold mb-6">Factura Nº <%= @factura.numero %></h1>
+
+<div class="mb-4">
+  <h2 class="text-xl font-semibold">Cliente</h2>
+  <p><strong>Nombre:</strong> <%= @factura.cliente.nombre %></p>
+  <p><strong>Correo:</strong> <%= @factura.cliente.correo %></p>
+  <p><strong>Dirección:</strong> <%= @factura.cliente.direccion %></p>
+</div>
+
+<table class="min-w-full table-auto border">
+  <thead>
+    <tr class="bg-gray-100">
+      <th class="px-4 py-2">Producto</th>
+      <th class="px-4 py-2">Cantidad</th>
+      <th class="px-4 py-2">Precio Unitario</th>
+      <th class="px-4 py-2">Impuesto</th>
+      <th class="px-4 py-2">Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @factura.detalle_facturas.each do |detalle| %>
+      <tr class="border-b">
+        <td class="px-4 py-2"><%= detalle.producto.nombre %></td>
+        <td class="px-4 py-2"><%= detalle.cantidad %></td>
+        <td class="px-4 py-2"><%= number_to_currency(detalle.precio_unitario) %></td>
+        <td class="px-4 py-2"><%= detalle.tasa ? detalle.tasa.nombre + \" (#{detalle.tasa.porcentaje}%)\" : 'Sin impuesto' %></td>
+        <td class="px-4 py-2">
+          <%= number_to_currency(detalle.cantidad * detalle.precio_unitario * (1 + (detalle.tasa&.porcentaje.to_f || 0) / 100)) %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div class="mt-6 text-right">
+  <p class="text-lg"><strong>Subtotal:</strong> <%= number_to_currency(@factura.subtotal) %></p>
+  <p class="text-xl font-bold"><strong>Total:</strong> <%= number_to_currency(@factura.total) %></p>
+</div>
+
+<div class="mt-6">
+  <%= link_to 'Descargar PDF', factura_path(@factura, format: :pdf), 
+      class: \"bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700\" %>
+</div>

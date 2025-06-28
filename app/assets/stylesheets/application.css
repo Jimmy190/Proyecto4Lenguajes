@@ -1,0 +1,101 @@
+/* Estilos globales */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f9fc;
+  color: #333;
+}
+
+/* Navbar */
+nav {
+  background-color: #00274d;
+  color: white;
+  padding: 1rem;
+}
+
+nav a {
+  color: white;
+  margin-right: 1.5rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Contenedor principal */
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Mensajes */
+.notice {
+  background-color: #e6ffed;
+  border-left: 5px solid #38a169;
+  color: #22543d;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+.alert {
+  background-color: #ffe6e6;
+  border-left: 5px solid #e53e3e;
+  color: #742a2a;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  border-radius: 4px;
+}
+
+/* Botones */
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  font-weight: bold;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-green {
+  background-color: #38a169;
+  color: white;
+}
+
+.btn-red {
+  background-color: #e53e3e;
+  color: white;
+}
+
+.btn-blue {
+  background-color: #3182ce;
+  color: white;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Tablas */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+th, td {
+  padding: 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid #ccc;
+}
+
+th {
+  background-color: #00274d;
+  color: white;
+}

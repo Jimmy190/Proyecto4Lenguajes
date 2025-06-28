@@ -1,0 +1,28 @@
+<h1 class="text-2xl font-bold mb-6">Nueva Factura</h1>
+
+<%= form_with(model: @factura, local: true) do |f| %>
+  <div class="mb-4">
+    <%= f.label :cliente_id, "Cliente", class: "block font-semibold" %>
+    <%= f.collection_select :cliente_id, Cliente.all, :id, :nombre, prompt: "Seleccione un cliente", class: "w-full border rounded px-2 py-1" %>
+  </div>
+
+  <h2 class="text-xl font-bold mt-6 mb-2">Productos</h2>
+  <div id="productos-container">
+    <% Producto.all.each do |producto| %>
+      <div class="mb-4 p-4 border rounded bg-gray-50">
+        <%= check_box_tag "factura[productos][#{producto.id}][seleccionado]", true %>
+        <%= producto.nombre %> - <%= number_to_currency producto.precio %>
+
+        <label class="ml-4">Cantidad:</label>
+        <%= number_field_tag "factura[productos][#{producto.id}][cantidad]", 1, min: 1, class: "w-16 border rounded px-1" %>
+
+        <label class="ml-4">Tasa:</label>
+        <%= select_tag "factura[productos][#{producto.id}][tasa_id]", options_from_collection_for_select(Tasa.all, :id, :nombre), include_blank: true, class: "border rounded px-1" %>
+      </div>
+    <% end %>
+  </div>
+
+  <div class="mt-6">
+    <%= f.submit "Crear Factura", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
+  </div>
+<% end %>

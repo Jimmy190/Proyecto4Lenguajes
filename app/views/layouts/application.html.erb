@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Sistema de Facturación</title>
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= stylesheet_link_tag "application", media: "all", "data-turbo-track": "reload" %>
+    <%= javascript_include_tag "application", type: "module", "data-turbo-track": "reload" %>
+  </head>
+
+  <body>
+    <nav>
+      <%= link_to "Productos", productos_path %>
+      <%= link_to "Movimientos", movimientos_path %>
+      <%= link_to "Clientes", clientes_path %>
+      <%= link_to "Tasas de Impuesto", tasas_path %>
+      <%= link_to "Facturas", facturas_path %>
+    </nav>
+
+    <main>
+      <% if notice %>
+        <div class="notice"><%= notice %></div>
+      <% end %>
+      <% if alert %>
+        <div class="alert"><%= alert %></div>
+      <% end %>
+
+      <%= yield %>
+    </main>
+  </body>
+</html>

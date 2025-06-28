@@ -1,0 +1,10 @@
+<p style="color: green"><%= notice %></p>
+
+<%= render @tasa %>
+
+<div>
+  <%= link_to "Edit this tasa", edit_tasa_path(@tasa) %> |
+  <%= link_to "Back to tasas", tasas_path %>
+
+  <%= button_to "Destroy this tasa", @tasa, method: :delete %>
+</div>

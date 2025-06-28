@@ -1,9 +1,32 @@
-<h1>New factura</h1>
+<h1 class="text-2xl font-bold mb-6">Nueva Factura</h1>
 
-<%= render "form", factura: @factura %>
+<%= form_with(model: @factura, local: true) do |f| %>
+  <div class="mb-4">
+    <%= f.label :cliente_id, "Cliente", class: "block font-semibold mb-1" %>
+    <%= f.collection_select :cliente_id, Cliente.all, :id, :nombre, prompt: "Seleccione un cliente", class: "w-full border rounded px-2 py-1" %>
+  </div>
 
-<br>
+  <div class="mb-6">
+    <%= label_tag :tasa_id, "Tasa de Impuesto", class: "block font-semibold mb-1" %>
+    <%= select_tag :tasa_id, options_from_collection_for_select(Tasa.all, :id, :nombre), include_blank: "Seleccionar", class: "w-full border rounded px-2 py-1" %>
+  </div>
 
-<div>
-  <%= link_to "Back to facturas", facturas_path %>
-</div>
+  <h2 class="text-xl font-bold mb-4">Productos</h2>
+
+  <% Producto.where("stock >= 5").each do |producto| %>
+    <div class="mb-4 p-4 border rounded bg-gray-50">
+      <%= check_box_tag "factura[productos][#{producto.id}][seleccionado]", true, false, id: "producto_#{producto.id}" %>
+      <%= label_tag "producto_#{producto.id}", "#{producto.nombre} - #{number_to_currency(producto.precio)} (Stock: #{producto.stock})", class: "font-semibold" %>
+
+      <div class="mt-2 flex items-center gap-4">
+        <label>Cantidad:</label>
+        <%= number_field_tag "factura[productos][#{producto.id}][cantidad]", 1, min: 1, max: producto.stock, class: "w-20 border rounded px-2 py-1" %>
+      </div>
+    </div>
+  <% end %>
+
+  <div class="mt-6">
+    <%= f.submit "Crear Factura", class: "btn btn-green" %>
+    <%= link_to "Cancelar", facturas_path, class: "btn btn-blue ml-2" %>
+  </div>
+<% end %>

@@ -11,4 +11,16 @@ class DetalleFactura < ApplicationRecord
   def set_precio_unitario
     self.precio_unitario ||= producto.precio
   end
+
+  def subtotal
+    precio_unitario * cantidad
+  end
+
+  def monto_impuesto
+    tasa ? subtotal * (tasa.porcentaje / 100.0) : 0
+  end
+
+  def total_con_impuesto
+    subtotal + monto_impuesto
+  end
 end

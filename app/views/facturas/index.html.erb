@@ -1,28 +1,70 @@
-<h1 class="text-2xl font-bold mb-6">Nueva Factura</h1>
+<h1 class="text-2xl font-bold mb-4">Nueva Factura</h1>
 
-<%= form_with(model: @factura, local: true) do |f| %>
-  <div class="mb-4">
-    <%= f.label :cliente_id, "Cliente", class: "block font-semibold" %>
-    <%= f.collection_select :cliente_id, Cliente.all, :id, :nombre, prompt: "Seleccione un cliente", class: "w-full border rounded px-2 py-1" %>
-  </div>
+<%= form_with url: facturas_path, method: :post, local: true do %>
+  <table class="min-w-full text-sm border bg-white shadow rounded mb-6" id="tabla-factura">
+    <thead class="bg-gray-200">
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Tasa de Impuesto</th>
+        <th>Subtotal</th>
+        <th>Total con Impuesto</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @productos.each do |producto| %>
+        <tr data-precio="<%= producto.precio %>">
+          <td><%= producto.nombre %></td>
+          <td>
+            <%= number_field_tag "lineas[][cantidad]", 0, min: 0, class: "cantidad w-16 border rounded px-1" %>
+            <%= hidden_field_tag "lineas[][producto_id]", producto.id %>
+          </td>
+          <td>
+            <select name="lineas[][tasa_id]" class="tasa border rounded px-1">
+              <option value="">Sin impuesto</option>
+              <% @tasas.each do |tasa| %>
+                <option value="<%= tasa.id %>" data-porcentaje="<%= tasa.porcentaje %>">
+                  <%= "#{tasa.nombre} (#{tasa.porcentaje}%)" %>
+                </option>
+              <% end %>
+            </select>
+          </td>
+          <td class="subtotal">$0.00</td>
+          <td class="total">$0.00</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
 
-  <h2 class="text-xl font-bold mt-6 mb-2">Productos</h2>
-  <div id="productos-container">
-    <% Producto.all.each do |producto| %>
-      <div class="mb-4 p-4 border rounded bg-gray-50">
-        <%= check_box_tag "factura[productos][#{producto.id}][seleccionado]", true %>
-        <%= producto.nombre %> - <%= number_to_currency producto.precio %>
-
-        <label class="ml-4">Cantidad:</label>
-        <%= number_field_tag "factura[productos][#{producto.id}][cantidad]", 1, min: 1, class: "w-16 border rounded px-1" %>
-
-        <label class="ml-4">Tasa:</label>
-        <%= select_tag "factura[productos][#{producto.id}][tasa_id]", options_from_collection_for_select(Tasa.all, :id, :nombre), include_blank: true, class: "border rounded px-1" %>
-      </div>
-    <% end %>
-  </div>
-
-  <div class="mt-6">
-    <%= f.submit "Crear Factura", class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
-  </div>
+  <%= submit_tag "Facturar", class: "btn btn-green px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" %>
 <% end %>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const filas = document.querySelectorAll("#tabla-factura tbody tr");
+
+  filas.forEach(fila => {
+    const cantidadInput = fila.querySelector(".cantidad");
+    const tasaSelect = fila.querySelector(".tasa");
+    const subtotalTd = fila.querySelector(".subtotal");
+    const totalTd = fila.querySelector(".total");
+    const precio = parseFloat(fila.dataset.precio);
+
+    function actualizar() {
+      const cantidad = parseInt(cantidadInput.value) || 0;
+      const tasaOption = tasaSelect.options[tasaSelect.selectedIndex];
+      const porcentaje = parseFloat(tasaOption.dataset.porcentaje || 0);
+
+      const subtotal = precio * cantidad;
+      const impuesto = subtotal * (porcentaje / 100);
+      const total = subtotal + impuesto;
+
+      subtotalTd.textContent = `$${subtotal.toFixed(2)}`;
+      totalTd.textContent = `$${total.toFixed(2)}`;
+    }
+
+    cantidadInput.addEventListener("input", actualizar);
+    tasaSelect.addEventListener("change", actualizar);
+  });
+});
+</script>

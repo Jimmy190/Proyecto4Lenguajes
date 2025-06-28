@@ -6,6 +6,8 @@ Rails.application.routes.draw do
   resources :clientes
   resources :tasas
   resources :facturas do
-    resources :detalle_facturas, only: [:new, :create, :edit, :update, :destroy]
+    collection do
+      get :preview
+    end
   end
 end

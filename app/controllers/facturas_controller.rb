@@ -1,42 +1,64 @@
 class FacturasController < ApplicationController
-  def create
-    @factura = Factura.new(cliente_id: factura_params[:cliente_id])
+  def index
+    @productos = Producto.all.select { |p| p.stock > 5 }
+    @tasas = Tasa.all
+  end
 
-    productos_params = params.dig(:factura, :productos) || {}
+  def create
+    lineas = params[:lineas] || []
 
     ActiveRecord::Base.transaction do
-      if @factura.save
-        productos_params.each do |producto_id, detalle|
-          next unless detalle[:seleccionado] == 'true'
+      factura = Factura.create!(cliente: Cliente.first) # Ajusta según necesidad
 
-          cantidad = detalle[:cantidad].to_i
-          tasa_id = detalle[:tasa_id].presence
-          producto = Producto.find(producto_id)
+      lineas.each do |linea|
+        producto_id = linea[:producto_id]
+        cantidad = linea[:cantidad].to_i
+        tasa_id = linea[:tasa_id]
 
-          @factura.detalle_facturas.create!(
-            producto: producto,
-            cantidad: cantidad,
-            precio_unitario: producto.precio,
-            tasa_id: tasa_id
-          )
-        end
+        next if cantidad <= 0 || producto_id.blank?
 
-        @factura.calcular_totales
-        @factura.save!
+        producto = Producto.find(producto_id)
+        tasa = Tasa.find_by(id: tasa_id)
 
-        redirect_to @factura, notice: 'Factura creada correctamente.'
-      else
-        render :new, status: :unprocessable_entity
+        cantidad = [cantidad, producto.stock].min
+
+        factura.detalle_facturas.create!(
+          producto: producto,
+          cantidad: cantidad,
+          precio_unitario: producto.precio,
+          tasa: tasa
+        )
+
+        producto.ajustar_stock!(cantidad: cantidad, tipo: 'salida', nota: "Venta mediante factura ##{factura.id}")
       end
+
+      factura.calcular_totales
+      factura.save!
+
+      redirect_to factura_path(factura), notice: "Factura creada con éxito"
     end
-  rescue ActiveRecord::RecordInvalid => e
-    flash.now[:alert] = "Error al crear factura: #{e.message}"
-    render :new, status: :unprocessable_entity
+  rescue => e
+    redirect_to facturas_path, alert: "Error al crear la factura: #{e.message}"
   end
 
-  private
+  def show
+    @factura = Factura.find(params[:id])
 
-  def factura_params
-    params.require(:factura).permit(:cliente_id)
+    # Opcional, si no está calculado y guardado
+    @factura.calcular_totales
+
+    # Por ejemplo, calcular total por línea (podría estar en el modelo detalle)
+    @lineas_con_totales = @factura.detalle_facturas.map do |detalle|
+      subtotal = detalle.precio_unitario * detalle.cantidad
+      impuesto = subtotal * ((detalle.tasa&.porcentaje || 0) / 100.0)
+      total = subtotal + impuesto
+      {
+        detalle: detalle,
+        subtotal: subtotal,
+        impuesto: impuesto,
+        total: total
+      }
+    end
   end
+
 end

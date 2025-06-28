@@ -11,12 +11,16 @@ class Factura < ApplicationRecord
     self.numero = (Factura.maximum(:numero) || 0) + 1
   end
 
-  def calcular_totales
-    self.subtotal = detalle_facturas.sum { |d| d.precio_unitario * d.cantidad }
-    self.total = detalle_facturas.sum do |d|
-      base = d.precio_unitario * d.cantidad
-      tasa = d.tasa ? (d.tasa.porcentaje / 100.0) : 0
-      base + (base * tasa)
+  def impuestos
+    detalle_facturas.sum do |detalle|
+      subtotal = detalle.precio_unitario * detalle.cantidad
+      tasa = detalle.tasa&.porcentaje.to_f || 0
+      subtotal * (tasa / 100.0)
     end
+  end
+  
+  def calcular_totales
+    self.subtotal = detalle_facturas.sum(&:subtotal)
+    self.total = detalle_facturas.sum(&:total_con_impuesto)
   end
 end

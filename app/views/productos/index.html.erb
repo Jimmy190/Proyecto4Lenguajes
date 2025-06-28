@@ -1,8 +1,14 @@
 <h1 class="text-2xl font-bold mb-6">Listado de Productos</h1>
 
-<table class="min-w-full table-auto border">
+<!-- Botón para agregar producto -->
+<div class="mb-4">
+  <%= link_to "➕ Agregar producto", new_producto_path, class: "btn btn-green" %>
+</div>
+
+<!-- Tabla de productos -->
+<table class="min-w-full table-auto border bg-white shadow rounded">
   <thead>
-    <tr class="bg-gray-100 text-left">
+    <tr class="bg-blue-900 text-white">
       <th class="px-4 py-2">Nombre</th>
       <th class="px-4 py-2">Precio</th>
       <th class="px-4 py-2">Stock</th>
@@ -12,21 +18,27 @@
   </thead>
   <tbody>
     <% @productos.each do |producto| %>
-      <tr class="<%= producto.stock_bajo? ? 'bg-red-100' : 'bg-green-100' %>">
+      <tr class="<%= producto.stock_bajo? ? 'bg-red-50' : 'bg-green-50' %>">
         <td class="border px-4 py-2"><%= producto.nombre %></td>
         <td class="border px-4 py-2"><%= number_to_currency producto.precio %></td>
         <td class="border px-4 py-2"><%= producto.stock %></td>
         <td class="border px-4 py-2">
           <% if producto.stock_bajo? %>
-            <span class="text-red-600 font-semibold">Stock Bajo</span>
+            <span class="text-red-700 font-semibold">Stock Bajo</span>
           <% else %>
-            <span class="text-green-600 font-semibold">Suficiente</span>
+            <span class="text-green-700 font-semibold">Suficiente</span>
           <% end %>
         </td>
         <td class="border px-4 py-2">
-          <%= link_to 'Ver', producto_path(producto), class: "text-blue-600 hover:underline" %> |
-          <%= link_to 'Editar', edit_producto_path(producto), class: "text-green-600 hover:underline" %> |
-          <%= link_to 'Eliminar', producto_path(producto), method: :delete, data: { confirm: '¿Eliminar producto?' }, class: "text-red-600 hover:underline" %>
+          <div class="flex flex-wrap gap-2">
+            <%= link_to "Editar", edit_producto_path(producto), class: "btn btn-blue" %>
+            <%= link_to "Eliminar", producto_path(producto),
+                method: :delete,
+                data: { confirm: "¿Eliminar producto?" },
+                class: "btn btn-red" %>
+            <%= link_to "➕ Entrada", new_movimiento_path(producto_id: producto.id, tipo: "entrada"),
+                class: "btn btn-green" %>
+          </div>
         </td>
       </tr>
     <% end %>

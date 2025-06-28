@@ -17,23 +17,45 @@ class ProductosController < ApplicationController
     @producto = Producto.new(producto_params)
 
     if @producto.save
-      redirect_to @producto, notice: 'Producto creado correctamente.'
+      # Si tiene stock inicial, crear movimiento de entrada
+      if @producto.stock > 0
+        @producto.ajustar_stock!(cantidad: @producto.stock, tipo: :entrada, nota: "Stock inicial")
+      end
+      redirect_to productos_path, notice: "Producto creado exitosamente."
     else
       render :new, status: :unprocessable_entity
     end
   end
 
   def update
+    old_stock = @producto.stock
+
     if @producto.update(producto_params)
-      redirect_to @producto, notice: 'Producto actualizado correctamente.'
+      nuevo_stock = @producto.stock
+      diferencia = (nuevo_stock - old_stock).abs
+
+      if diferencia > 0
+        tipo = nuevo_stock > old_stock ? :entrada : :salida
+
+        if tipo == :salida && old_stock < diferencia
+          flash.now[:alert] = "No hay suficiente stock para reducir."
+          render :edit, status: :unprocessable_entity
+          return
+        end
+
+        @producto.movimientos.create!(cantidad: diferencia, tipo: tipo.to_s, nota: "Ajuste de stock por edición")
+      end
+
+      redirect_to productos_path, notice: "Producto actualizado correctamente."
     else
       render :edit, status: :unprocessable_entity
     end
   end
 
+
   def destroy
     @producto.destroy
-    redirect_to productos_url, notice: 'Producto eliminado.'
+    redirect_to productos_path, notice: "Producto eliminado correctamente."
   end
 
   private

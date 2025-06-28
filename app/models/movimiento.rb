@@ -1,16 +1,16 @@
+# app/models/movimiento.rb
 class Movimiento < ApplicationRecord
-  belongs_to :producto
+  belongs_to :producto, optional: true
 
   validates :cantidad, presence: true, numericality: { greater_than: 0 }
   validates :tipo, inclusion: { in: ['entrada', 'salida'] }
 
-  after_create :actualizar_stock
+  # Antes de validar/guardar, guarda el nombre actual del producto
+  before_validation :capturar_producto_nombre, on: :create
 
-  def actualizar_stock
-    if tipo == 'entrada'
-      producto.increment!(:stock, cantidad)
-    elsif tipo == 'salida'
-      producto.decrement!(:stock, cantidad)
-    end
+  private
+
+  def capturar_producto_nombre
+    self.producto_nombre = producto&.nombre
   end
 end

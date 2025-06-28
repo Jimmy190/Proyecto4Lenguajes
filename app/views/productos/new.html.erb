@@ -1,9 +1,5 @@
-<h1>New producto</h1>
+<h1 class="text-2xl font-bold mb-6">
+  <%= @producto.new_record? ? "Nuevo Producto" : "Editar Producto" %>
+</h1>
 
 <%= render "form", producto: @producto %>
-
-<br>
-
-<div>
-  <%= link_to "Back to productos", productos_path %>
-</div>

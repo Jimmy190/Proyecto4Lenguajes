@@ -1,45 +1,34 @@
 class MovimientosController < ApplicationController
-  before_action :set_movimiento, only: %i[show edit update destroy]
+  before_action :set_producto, only: [:new, :create]
 
+  # GET /movimientos
   def index
     @movimientos = Movimiento.includes(:producto).order(created_at: :desc)
   end
 
-  def show; end
-
   def new
-    @movimiento = Movimiento.new
+    @movimiento = Movimiento.new(
+      producto: @producto,
+      tipo: params[:tipo] || 'entrada'
+    )
   end
-
-  def edit; end
 
   def create
     @movimiento = Movimiento.new(movimiento_params)
+    @movimiento.producto = @producto
 
     if @movimiento.save
-      redirect_to movimientos_path, notice: 'Movimiento registrado correctamente.'
+      redirect_to movimientos_path, notice: "Movimiento registrado exitosamente."
     else
+      flash.now[:alert] = "No se pudo registrar el movimiento."
       render :new, status: :unprocessable_entity
     end
   end
 
-  def update
-    if @movimiento.update(movimiento_params)
-      redirect_to @movimiento, notice: 'Movimiento actualizado.'
-    else
-      render :edit, status: :unprocessable_entity
-    end
-  end
-
-  def destroy
-    @movimiento.destroy
-    redirect_to movimientos_url, notice: 'Movimiento eliminado.'
-  end
-
   private
 
-  def set_movimiento
-    @movimiento = Movimiento.find(params[:id])
+  def set_producto
+    @producto = Producto.find(params[:producto_id]) if params[:producto_id]
   end
 
   def movimiento_params

@@ -1,32 +1,29 @@
-<%= form_with(model: producto) do |form| %>
+<%= form_with(model: producto, local: true) do |form| %>
   <% if producto.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(producto.errors.count, "error") %> prohibited this producto from being saved:</h2>
-
+    <div class="alert">
+      <h2><%= pluralize(producto.errors.count, "error") %> impidieron guardar el producto:</h2>
       <ul>
-        <% producto.errors.each do |error| %>
-          <li><%= error.full_message %></li>
+        <% producto.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
         <% end %>
       </ul>
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :nombre, style: "display: block" %>
-    <%= form.text_field :nombre %>
+  <div class="mb-4">
+    <%= form.label :nombre, class: "block font-bold mb-1" %>
+    <%= form.text_field :nombre, class: "w-full border rounded px-3 py-2" %>
   </div>
 
-  <div>
-    <%= form.label :precio, style: "display: block" %>
-    <%= form.text_field :precio %>
+  <div class="mb-4">
+    <%= form.label :precio, class: "block font-bold mb-1" %>
+    <%= form.number_field :precio, step: 0.01, class: "w-full border rounded px-3 py-2" %>
   </div>
 
-  <div>
-    <%= form.label :stock, style: "display: block" %>
-    <%= form.number_field :stock %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="flex items-center gap-4 mt-6">
+    <%= form.submit(producto.new_record? ? "Crear Producto" : "Actualizar Producto", class: "btn btn-green") %>
+    <button type="button" onclick="window.location='<%= productos_path %>'" class="btn btn-blue">
+      Cancelar
+    </button>
   </div>
 <% end %>

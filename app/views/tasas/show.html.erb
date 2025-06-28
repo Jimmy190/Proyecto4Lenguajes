@@ -1,10 +1,16 @@
-<p style="color: green"><%= notice %></p>
+<% if notice %>
+  <div class="notice bg-green-100 text-green-800 px-4 py-2 rounded mb-4">
+    <%= notice %>
+  </div>
+<% end %>
 
-<%= render @tasa %>
+<div class="bg-white shadow rounded p-6 mb-6">
+  <%= render @tasa %>
+</div>
 
-<div>
-  <%= link_to "Edit this tasa", edit_tasa_path(@tasa) %> |
-  <%= link_to "Back to tasas", tasas_path %>
-
-  <%= button_to "Destroy this tasa", @tasa, method: :delete %>
+<div class="flex gap-4">
+  <%= button_to "Eliminar tasa", @tasa,
+      method: :delete,
+      data: { confirm: "¿Estás seguro de eliminar esta tasa?" },
+      class: "btn btn-red" %>
 </div>

@@ -30,3 +30,8 @@
   <p><strong>Total Impuestos:</strong> <%= number_to_currency(@factura.impuestos) %></p>
   <p><strong>Total Final:</strong> <%= number_to_currency(@factura.total) %></p>
 </div>
+
+<div class="mt-6">
+  <%= link_to "📄 Descargar PDF", factura_path(@factura, format: :pdf),
+      class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
+</div>

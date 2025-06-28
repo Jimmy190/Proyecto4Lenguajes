@@ -1,10 +1,5 @@
-<h1>Editing tasa</h1>
+<h1 class="text-2xl font-bold mb-6">
+  <%= @tasa.new_record? ? "Nueva Tasa" : "Editar Tasa" %>
+</h1>
 
 <%= render "form", tasa: @tasa %>
-
-<br>
-
-<div>
-  <%= link_to "Show this tasa", @tasa %> |
-  <%= link_to "Back to tasas", tasas_path %>
-</div>

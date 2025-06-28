@@ -1,18 +1,29 @@
 class ProductosController < ApplicationController
   before_action :set_producto, only: %i[show edit update destroy]
 
+  # GET /productos
+  # Muestra todos los productos disponibles
   def index
     @productos = Producto.all
   end
 
+  # GET /productos/:id
+  # Muestra un producto específico por su ID
   def show; end
 
+  # GET /productos/new
+  # Inicializa un nuevo producto para el formulario de creación
   def new
     @producto = Producto.new
   end
 
+  # GET /productos/:id/edit
+  # Muestra el formulario de edición para un producto existente
   def edit; end
 
+  # POST /productos
+  # Crea un nuevo producto con los parámetros permitidos
+  # Redirige a la lista de productos o muestra un error si falla
   def create
     @producto = Producto.new(producto_params)
 
@@ -27,6 +38,10 @@ class ProductosController < ApplicationController
     end
   end
 
+  # PATCH/PUT /productos/:id
+  # Actualiza un producto existente con los parámetros permitidos
+  # Ajusta el stock si ha habido cambios
+  # Redirige a la lista de productos o muestra un error si falla
   def update
     old_stock = @producto.stock
 
@@ -52,7 +67,9 @@ class ProductosController < ApplicationController
     end
   end
 
-
+  # DELETE /productos/:id
+  # Elimina un producto existente
+  # Redirige a la lista de productos con un mensaje de confirmación
   def destroy
     @producto.destroy
     redirect_to productos_path, notice: "Producto eliminado correctamente."
@@ -60,10 +77,11 @@ class ProductosController < ApplicationController
 
   private
 
+  # Método para buscar y asignar el producto basado en el id recibido en params
   def set_producto
     @producto = Producto.find(params[:id])
   end
-
+  # Define los parámetros permitidos para crear o actualizar un producto
   def producto_params
     params.require(:producto).permit(:nombre, :precio, :stock)
   end

@@ -13,10 +13,12 @@
     </thead>
     <tbody>
       <% @productos.each do |producto| %>
-        <tr data-precio="<%= producto.precio %>">
-          <td><%= producto.nombre %></td>
+        <tr data-precio="<%= producto.precio %>" data-stock="<%= producto.stock %>">
           <td>
-            <%= number_field_tag "lineas[][cantidad]", 0, min: 0, class: "cantidad w-16 border rounded px-1" %>
+            <%= producto.nombre %> <span class="text-xs text-gray-500">(Stock: <%= producto.stock %>)</span>
+          </td>
+          <td>
+            <%= number_field_tag "lineas[][cantidad]", 0, min: 0, max: producto.stock, class: "cantidad w-16 border rounded px-1" %>
             <%= hidden_field_tag "lineas[][producto_id]", producto.id %>
           </td>
           <td>
@@ -49,11 +51,19 @@ document.addEventListener("turbo:load", () => {
     const subtotalTd = fila.querySelector(".subtotal");
     const totalTd = fila.querySelector(".total");
     const precio = parseFloat(fila.dataset.precio);
+    const stock = parseInt(fila.dataset.stock);
 
     function actualizar() {
-      const cantidad = parseInt(cantidadInput.value) || 0;
+      let cantidad = parseInt(cantidadInput.value) || 0;
+
+      if (cantidad > stock) {
+        alert(`Solo hay ${stock} unidades disponibles.`);
+        cantidad = stock;
+        cantidadInput.value = stock;
+      }
+
       const tasaOption = tasaSelect.options[tasaSelect.selectedIndex];
-      const porcentaje = parseFloat(tasaOption.dataset.porcentaje || 0);
+      const porcentaje = parseFloat(tasaOption?.dataset?.porcentaje || 0);
 
       const subtotal = precio * cantidad;
       const impuesto = subtotal * (porcentaje / 100);
@@ -68,3 +78,4 @@ document.addEventListener("turbo:load", () => {
   });
 });
 </script>
+

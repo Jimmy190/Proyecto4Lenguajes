@@ -1,14 +1,20 @@
 class FacturasController < ApplicationController
+
+  # Inicializa el index con los productos que tienen stock mayor a 5
   def index
     @productos = Producto.all.select { |p| p.stock > 5 }
     @tasas = Tasa.all
   end
 
+  # Funcion de crear una nueva factura
+  # Recibe un array de lineas con producto_id, cantidad y tasa_id
+  # Crea una factura y sus detalles, ajustando el stock de los productos
+  # Redirige a la vista de la factura creada o muestra un error si falla
   def create
     lineas = params[:lineas] || []
 
     ActiveRecord::Base.transaction do
-      factura = Factura.create!(cliente: Cliente.first) # Ajusta según necesidad
+      factura = Factura.create!(cliente: Cliente.first) 
 
       lineas.each do |linea|
         producto_id = linea[:producto_id]
@@ -41,13 +47,12 @@ class FacturasController < ApplicationController
     redirect_to facturas_path, alert: "Error al crear la factura: #{e.message}"
   end
 
+  # Muestra una factura específica por su ID
   def show
     @factura = Factura.find(params[:id])
 
-    # Opcional, si no está calculado y guardado
     @factura.calcular_totales
 
-    # Por ejemplo, calcular total por línea (podría estar en el modelo detalle)
     @lineas_con_totales = @factura.detalle_facturas.map do |detalle|
       subtotal = detalle.precio_unitario * detalle.cantidad
       impuesto = subtotal * ((detalle.tasa&.porcentaje || 0) / 100.0)
@@ -59,6 +64,17 @@ class FacturasController < ApplicationController
         total: total
       }
     end
-  end
 
+    # Renderiza la factura en PDF
+    respond_to do |format|
+      format.html
+      format.pdf do
+        pdf = FacturaPdf.new(@factura, @lineas_con_totales)
+        send_data pdf.render,
+                  filename: "Factura_#{@factura.numero}.pdf",
+                  type: 'application/pdf',
+                  disposition: 'inline' 
+      end
+    end
+  end
 end

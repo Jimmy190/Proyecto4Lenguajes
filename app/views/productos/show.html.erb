@@ -1,0 +1,24 @@
+<%# app/views/productos/show.html.erb %>
+
+<% if notice %>
+  <div class="notice"><%= notice %></div>
+<% end %>
+
+<div class="bg-white shadow rounded p-6">
+  <h1 class="text-2xl font-bold mb-4"><%= @producto.nombre %></h1>
+  <p class="mb-2"><strong>Precio:</strong> <%= number_to_currency(@producto.precio) %></p>
+  <p class="mb-4"><strong>Stock actual:</strong> <%= @producto.stock %></p>
+  <p class="<%= @producto.stock_bajo? ? 'text-red-700' : 'text-green-700' %> font-semibold mb-4">
+    <% if @producto.stock_bajo? %>
+      Stock Bajo
+    <% else %>
+      Suficiente
+    <% end %>
+  </p>
+
+    <%= button_to "Eliminar producto", producto_path(@producto),
+      method: :delete,
+      data: { confirm: "¿Estás seguro?" },
+      class: "btn btn-red" %>
+  </div>
+</div>

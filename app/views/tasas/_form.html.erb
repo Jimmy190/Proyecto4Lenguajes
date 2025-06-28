@@ -1,0 +1,29 @@
+<%= form_with(model: tasa, local: true) do |form| %>
+  <% if tasa.errors.any? %>
+    <div class="alert bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+      <h2 class="font-bold mb-2"><%= pluralize(tasa.errors.count, "error") %> impidieron guardar la tasa:</h2>
+      <ul class="list-disc list-inside">
+        <% tasa.errors.full_messages.each do |message| %>
+          <li><%= message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="mb-4">
+    <%= form.label :nombre, class: "block font-bold mb-1" %>
+    <%= form.text_field :nombre, class: "w-full border rounded px-3 py-2" %>
+  </div>
+
+  <div class="mb-4">
+    <%= form.label :porcentaje, class: "block font-bold mb-1" %>
+    <%= form.number_field :porcentaje, step: 0.01, min: 0, class: "w-full border rounded px-3 py-2" %>
+  </div>
+
+  <div class="flex items-center gap-4 mt-6">
+    <%= form.submit(tasa.new_record? ? "Crear Tasa" : "Actualizar Tasa", class: "btn btn-green") %>
+    <button type="button" onclick="window.location='<%= tasas_path %>'" class="btn btn-blue">
+      Cancelar
+    </button>
+  </div>
+<% end %>

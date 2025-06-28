@@ -1,0 +1,134 @@
+/* Estilos globales */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f7f9fc;
+  color: #333;
+}
+
+/* Añade un espacio general entre bloques */
+main > * + * {
+  margin-top: 1.5rem;
+}
+
+/* Navbar */
+nav {
+  background-color: #00274d;
+  color: white;
+  padding: 1.25rem 2rem;
+}
+
+nav a {
+  color: white;
+  margin-right: 2rem;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+nav a:hover {
+  text-decoration: underline;
+}
+
+/* Contenedor principal */
+main {
+  padding: 2rem;
+  max-width: 1200px;
+  margin: auto;
+}
+
+/* Mensajes */
+.notice,
+.alert {
+  padding: 1.25rem 1.5rem;
+  border-radius: 4px;
+}
+
+.notice {
+  background-color: #e6ffed;
+  border-left: 5px solid #38a169;
+  color: #22543d;
+}
+
+.alert {
+  background-color: #ffe6e6;
+  border-left: 5px solid #e53e3e;
+  color: #742a2a;
+}
+
+/* Formulario: espacio entre campos */
+form > div + div {
+  margin-top: 1rem;
+}
+
+/* Botones */
+.btn {
+  display: inline-block;
+  padding: 0.6rem 1.2rem;
+  font-weight: bold;
+  border-radius: 5px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-green {
+  background-color: #38a169;
+  color: white;
+}
+
+.btn-red {
+  background-color: #e53e3e;
+  color: white;
+}
+
+.btn-blue {
+  background-color: #3182ce;
+  color: white;
+}
+
+.btn + .btn {
+  margin-left: 0.75rem;
+}
+
+.btn:hover {
+  opacity: 0.9;
+}
+
+/* Tablas */
+table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0 0.5rem; /* espacio vertical entre filas */
+  background-color: white;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+th {
+  background-color: #00274d;
+  color: white;
+  padding: 1rem;
+}
+
+td {
+  padding: 0.9rem 1rem;
+  text-align: left;
+  background-color: #fafafa;
+}
+
+/* Bordes redondeados en filas */
+tbody tr {
+  border-radius: 4px;
+  overflow: hidden;
+  display: table-row; /* mantiene el layout de tabla */
+}
+
+/* Espacio extra antes y después de la tabla */
+table + * {
+  margin-top: 2rem;
+}
+
+/* Títulos */
+h1, h2, h3 {
+  margin-bottom: 1rem;
+}

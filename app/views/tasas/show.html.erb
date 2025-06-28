@@ -1,0 +1,16 @@
+<% if notice %>
+  <div class="notice bg-green-100 text-green-800 px-4 py-2 rounded mb-4">
+    <%= notice %>
+  </div>
+<% end %>
+
+<div class="bg-white shadow rounded p-6 mb-6">
+  <%= render @tasa %>
+</div>
+
+<div class="flex gap-4">
+  <%= button_to "Eliminar tasa", @tasa,
+      method: :delete,
+      data: { confirm: "¿Estás seguro de eliminar esta tasa?" },
+      class: "btn btn-red" %>
+</div>

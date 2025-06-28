@@ -1,0 +1,81 @@
+<h1 class="text-2xl font-bold mb-4">Nueva Factura</h1>
+
+<%= form_with url: facturas_path, method: :post, local: true do %>
+  <table class="min-w-full text-sm border bg-white shadow rounded mb-6" id="tabla-factura">
+    <thead class="bg-gray-200">
+      <tr>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Tasa de Impuesto</th>
+        <th>Subtotal</th>
+        <th>Total con Impuesto</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% @productos.each do |producto| %>
+        <tr data-precio="<%= producto.precio %>" data-stock="<%= producto.stock %>">
+          <td>
+            <%= producto.nombre %> <span class="text-xs text-gray-500">(Stock: <%= producto.stock %>)</span>
+          </td>
+          <td>
+            <%= number_field_tag "lineas[][cantidad]", 0, min: 0, max: producto.stock, class: "cantidad w-16 border rounded px-1" %>
+            <%= hidden_field_tag "lineas[][producto_id]", producto.id %>
+          </td>
+          <td>
+            <select name="lineas[][tasa_id]" class="tasa border rounded px-1">
+              <option value="">Sin impuesto</option>
+              <% @tasas.each do |tasa| %>
+                <option value="<%= tasa.id %>" data-porcentaje="<%= tasa.porcentaje %>">
+                  <%= "#{tasa.nombre} (#{tasa.porcentaje}%)" %>
+                </option>
+              <% end %>
+            </select>
+          </td>
+          <td class="subtotal">$0.00</td>
+          <td class="total">$0.00</td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+
+  <%= submit_tag "Facturar", class: "btn btn-green px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700" %>
+<% end %>
+
+<script>
+document.addEventListener("turbo:load", () => {
+  const filas = document.querySelectorAll("#tabla-factura tbody tr");
+
+  filas.forEach(fila => {
+    const cantidadInput = fila.querySelector(".cantidad");
+    const tasaSelect = fila.querySelector(".tasa");
+    const subtotalTd = fila.querySelector(".subtotal");
+    const totalTd = fila.querySelector(".total");
+    const precio = parseFloat(fila.dataset.precio);
+    const stock = parseInt(fila.dataset.stock);
+
+    function actualizar() {
+      let cantidad = parseInt(cantidadInput.value) || 0;
+
+      if (cantidad > stock) {
+        alert(`Solo hay ${stock} unidades disponibles.`);
+        cantidad = stock;
+        cantidadInput.value = stock;
+      }
+
+      const tasaOption = tasaSelect.options[tasaSelect.selectedIndex];
+      const porcentaje = parseFloat(tasaOption?.dataset?.porcentaje || 0);
+
+      const subtotal = precio * cantidad;
+      const impuesto = subtotal * (porcentaje / 100);
+      const total = subtotal + impuesto;
+
+      subtotalTd.textContent = `$${subtotal.toFixed(2)}`;
+      totalTd.textContent = `$${total.toFixed(2)}`;
+    }
+
+    cantidadInput.addEventListener("input", actualizar);
+    tasaSelect.addEventListener("change", actualizar);
+  });
+});
+</script>
+

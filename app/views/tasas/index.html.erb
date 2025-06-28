@@ -1,0 +1,36 @@
+<p style="color: green"><%= notice %></p>
+
+<h1 class="text-2xl font-bold mb-6">Listado de Tasas</h1>
+
+<!-- Botón para agregar tasa -->
+<div class="mb-4">
+  <%= link_to "➕ Agregar Tasa", new_tasa_path, class: "btn btn-green" %>
+</div>
+
+<!-- Tabla de tasas -->
+<table class="min-w-full table-auto border bg-white shadow rounded">
+  <thead>
+    <tr class="bg-blue-900 text-white">
+      <th class="px-4 py-2">Nombre</th>
+      <th class="px-4 py-2">Porcentaje</th>
+      <th class="px-4 py-2">Acciones</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tasas.each do |tasa| %>
+      <tr class="hover:bg-gray-50">
+        <td class="border px-4 py-2"><%= tasa.nombre %></td>
+        <td class="border px-4 py-2"><%= tasa.porcentaje %> %</td>
+        <td class="border px-4 py-2">
+          <div class="flex flex-wrap gap-2">
+            <%= link_to "Editar", edit_tasa_path(tasa), class: "btn btn-green" %>
+            <%= link_to "Eliminar", tasa_path(tasa),
+                method: :delete,
+                data: { confirm: "¿Eliminar esta tasa?" },
+                class: "btn btn-red" %>
+          </div>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

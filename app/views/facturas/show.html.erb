@@ -1,0 +1,37 @@
+<h1>Factura Nº <%= @factura.numero %></h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Producto</th>
+      <th>Cantidad</th>
+      <th>Precio Unitario</th>
+      <th>Subtotal</th>
+      <th>Impuesto</th>
+      <th>Total</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @lineas_con_totales.each do |linea| %>
+      <tr>
+        <td><%= linea[:detalle].producto.nombre %></td>
+        <td><%= linea[:detalle].cantidad %></td>
+        <td><%= number_to_currency(linea[:detalle].precio_unitario) %></td>
+        <td><%= number_to_currency(linea[:subtotal]) %></td>
+        <td><%= number_to_currency(linea[:impuesto]) %></td>
+        <td><%= number_to_currency(linea[:total]) %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<div>
+  <p><strong>Subtotal General:</strong> <%= number_to_currency(@factura.subtotal) %></p>
+  <p><strong>Total Impuestos:</strong> <%= number_to_currency(@factura.impuestos) %></p>
+  <p><strong>Total Final:</strong> <%= number_to_currency(@factura.total) %></p>
+</div>
+
+<div class="mt-6">
+  <%= link_to "📄 Descargar PDF", factura_path(@factura, format: :pdf),
+      class: "bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700" %>
+</div>

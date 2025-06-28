@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_06_28_162027) do
+ActiveRecord::Schema[7.1].define(version: 2025_06_28_190201) do
   create_table "clientes", force: :cascade do |t|
     t.string "nombre"
     t.string "correo"
@@ -21,7 +21,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_06_28_162027) do
 
   create_table "detalle_facturas", force: :cascade do |t|
     t.integer "factura_id", null: false
-    t.integer "producto_id", null: false
+    t.integer "producto_id"
     t.integer "cantidad"
     t.decimal "precio_unitario"
     t.integer "tasa_id"

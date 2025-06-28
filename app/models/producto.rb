@@ -1,7 +1,8 @@
 class Producto < ApplicationRecord
   # Relación con la tabla de movimientos
   has_many :movimientos, dependent: :nullify
-
+  has_many :detalle_facturas, dependent: :nullify
+  
   # Validaciones para asegurar que los campos requeridos no estén vacíos
   validates :nombre, presence: true
   validates :precio, numericality: { greater_than_or_equal_to: 0 }
